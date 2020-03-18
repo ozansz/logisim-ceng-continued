@@ -159,7 +159,7 @@ public class Grader {
                 for (int j = 0; j < i + 16; j++)
                     System.out.printf(" ");
 
-                System.out.println("^ erroneous output pin");
+                System.out.printf("^ erroneous output caught on index: %d\n", i);
 
                 return false;
             }
