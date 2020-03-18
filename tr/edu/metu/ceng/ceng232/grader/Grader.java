@@ -152,7 +152,7 @@ public class Grader {
                 sendingValue = getClockValue((Clock)outputPins[i]);
             
             if (sendingValue != values[i]) {
-                System.out.printf("\n[!!] TEST RUN FAIL\n");
+                System.out.printf("\n[!!] TEST RUN ERROR\n");
                 System.out.printf("    for input : %s,\n", new String(inp_values));
                 System.out.printf("    got output: %s\n", new String(values));
 
@@ -293,7 +293,6 @@ public class Grader {
                 else if (s.type == State.TYPE.TRUTH_TABLE) {
                     if (curPhase == 0) {
                         setInputs(s.inputs);
-                        System.out.printf("[+] Testing inputs: %s\n", new String(s.inputs));
                         curPhase = 1;
                         return;
                     } else {
@@ -334,10 +333,11 @@ public class Grader {
                 }
             }
 
-            if (runFailed)
-                System.out.println("FAIL");
-            else
-                System.out.println("PASS");
+            // NOTE: Was in original ceng version.
+            //if (runFailed)
+            //    System.out.println("FAIL");
+            //else
+            //    System.out.println("PASS");
 
             curRun++;
             if (curRun < Settings.runs.size()) {

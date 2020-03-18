@@ -58,7 +58,7 @@ public class Settings {
     }
 
     public static void loadGradingFile(File file) {
-        //System.out.println("loadGradingFile: " + file);
+        System.out.println("[i] Loading grading file: " + file);
 
         Properties prop = new Properties();
         try {
