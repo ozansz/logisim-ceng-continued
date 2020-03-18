@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE toc
+  PUBLIC 
+  "-//Sun Microsystems Inc.//DTD 
+   JavaHelp TOC Version 2.0//EN"
+  "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+<toc version="2.0" categoryclosedimage="chapter" topicimage="topic">
+<tocitem image="toplevelfolder" text="Logisim References" image="toplevelfolder" target="top">
+
+	<tocitem target="guide" text="Guide to Being a Logisim User">
+		<tocitem target="tutorial" text="Beginner's tutorial">
+			<tocitem target="tutorial_orient" text="Step 0: Orienting yourself" />
+			<tocitem target="tutorial_gates" text="Step 1: Adding gates" />
+			<tocitem target="tutorial_wires" text="Step 2: Adding wires" />
+			<tocitem target="tutorial_text" text="Step 3: Adding text" />
+			<tocitem target="tutorial_test" text="Step 4: Testing your circuit" />
+		</tocitem>
+		<tocitem target="attrlib" text="Libraries and attributes">
+			<tocitem target="attrlib_explore" text="The explorer pane" />
+			<tocitem target="attrlib_attr" text="The attribute table" />
+			<tocitem target="attrlib_tool" text="Tool and component attributes" />
+		</tocitem>
+		<tocitem target="subcirc" text="Subcircuits">
+			<tocitem target="subcirc_creating" text="Creating circuits" />
+			<tocitem target="subcirc_using" text="Using subcircuits" />
+			<tocitem target="subcirc_debug" text="Debugging subcircuits" />
+			<tocitem target="subcirc_library" text="Logisim libraries" />
+		</tocitem>
+		<tocitem target="bundles" text="Wire bundles">
+			<tocitem target="bundles_creating" text="Creating bundles" />
+			<tocitem target="bundles_splitting" text="Splitters" />
+			<tocitem target="bundles_colors" text="Wire colors" />
+		</tocitem>
+		<tocitem target="analyze" text="Combinational analysis">
+			<tocitem target="analyze_open" text="Opening Combinational Analysis" />
+			<tocitem target="analyze_table" text="Editing the truth table" />
+			<tocitem target="analyze_expr" text="Creating expressions" />
+			<tocitem target="analyze_gen" text="Generating a circuit" />
+		</tocitem>
+		<tocitem target="menu" text="Menu reference">
+			<tocitem target="menu_file" text="The File menu" />
+			<tocitem target="menu_edit" text="The Edit menu" />
+			<tocitem target="menu_project" text="The Project menu" />
+			<tocitem target="menu_simulate" text="The Simulate menu" />
+			<tocitem target="menu_winhelp" text="The Window and Help menus" />
+		</tocitem>
+		<tocitem target="mem_guide" text="Memory components">
+			<tocitem target="mem_poke" text="Poking memory" />
+			<tocitem target="mem_menu" text="Pop-up menus and files" />
+			<tocitem target="mem_hex" text="Hex editor" />
+		</tocitem>
+		<tocitem target="log" text="Logging">
+			<tocitem target="log_selection" text="The Selection tab" />
+			<tocitem target="log_table" text="The Table tab" />
+			<tocitem target="log_file" text="The File tab" />
+		</tocitem>
+		<tocitem target="prefs" text="Application preferences">
+			<tocitem target="prefs_template" text="The Template tab" />
+			<tocitem target="prefs_intl" text="The International tab" />
+			<tocitem target="prefs_exp" text="The Experimental tab" />
+			<tocitem target="prefs_cmdline" text="The command line" />
+		</tocitem>
+		<tocitem target="opts" text="Project options">
+			<tocitem target="opts_canvas" text="The Canvas tab" />
+			<tocitem target="opts_simulate" text="The Simulation tab" />
+			<tocitem target="opts_toolbar" text="The Toolbar tab" />
+			<tocitem target="opts_mouse" text="The Mouse tab" />
+		</tocitem>
+		<tocitem target="prop" text="Value propagation">
+			<tocitem target="prop_delays" text="Gate delays" />
+			<tocitem target="prop_oscillate" text="Oscillation errors" />
+			<tocitem target="prop_shortcome" text="Shortcomings" />
+		</tocitem>
+		<tocitem target="jar" text="JAR libraries">
+			<tocitem target="jar_byteincr" text="Byte Incrementer" />
+			<tocitem target="jar_library" text="Library Class" />
+			<tocitem target="jar_genincr" text="General Incrementer" />
+			<tocitem target="jar_basiccounter" text="Basic Counter" />
+			<tocitem target="jar_counter" text="Counter" />
+			<tocitem target="jar_guide" text="Guidelines" />
+		</tocitem>
+		<tocitem target="about" text="About the program">
+			<tocitem target="about_gpl" text="GNU General Public License" />
+		</tocitem>
+	</tocitem>
+
+	<tocitem text="Library Reference" target="libs">
+	  <tocitem text="Base library" target="base">
+		<tocitem text="Poke Tool" target="base_poke" />
+		<tocitem text="Select Tool" target="base_select" />
+		<tocitem text="Wiring Tool" target="base_wiring" />
+		<tocitem text="Text Tool" target="base_text" />
+		<tocitem text="Menu Tool" target="base_menu" />
+		<tocitem text="Splitter" target="base_splitter" />
+		<tocitem text="Pin" target="base_pin" />
+		<tocitem text="Probe" target="base_probe" />
+		<tocitem text="Clock" target="base_clock" />
+		<tocitem text="Text" target="base_textLabel" />
+	  </tocitem>
+	  <tocitem text="Gates library" target="gates">
+		<tocitem text="Constant" target="gates_constant" />
+		<tocitem text="NOT Gate" target="gates_not" />
+		<tocitem text="Buffer" target="gates_buffer" />
+		<tocitem text="AND/OR/NAND/NOR Gate" target="gates_basic" />
+		<tocitem text="XOR/XNOR/Even/Odd Gate" target="gates_xor" />
+		<tocitem text="Controlled Buffer/Inverter" target="gates_controlled" />
+	  </tocitem>
+	  <tocitem text="Memory library" target="mem">
+		<tocitem text="D/T/J-K/S-R Flip-Flop" target="mem_flipflops" />
+		<tocitem text="Register" target="mem_register" />
+		<tocitem text="RAM" target="mem_ram" />
+		<tocitem text="ROM" target="mem_rom" />
+	  </tocitem>
+	  <tocitem text="Plexers library" target="plexers">
+		<tocitem text="Multiplexer" target="plexers_mux" />
+		<tocitem text="Demultiplexer" target="plexers_demux" />
+		<tocitem text="Decoder" target="plexers_decoder" />
+		<tocitem text="Bit Selector" target="plexers_selector" />
+	  </tocitem>
+	  <tocitem text="Arithmetic library" target="arith">
+		<tocitem text="Adder" target="arith_adder" />
+		<tocitem text="Subtractor" target="arith_subtractor" />
+		<tocitem text="Multiplier" target="arith_multiplier" />
+		<tocitem text="Divider" target="arith_divider" />
+		<tocitem text="Negator" target="arith_negator" />
+		<tocitem text="Comparator" target="arith_comparator" />
+	  </tocitem>
+	  <tocitem text="Input/Output library" target="io">
+		<tocitem text="Button" target="io_button" />
+		<tocitem text="LED" target="io_led" />
+		<tocitem text="7-Segment display" target="io_7seg" />
+	  </tocitem>
+	  <tocitem text="Legacy library" target="legacy">
+		<tocitem text="Logisim 1.0 D/J-K Flip-Flop" target="legacy_flipflops" />
+		<tocitem text="Logisim 1.0 8-Bit Register" target="legacy_register" />
+	  </tocitem>
+	</tocitem>
+</tocitem>
+</toc>

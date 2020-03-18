@@ -1,0 +1,162 @@
+<html>
+<head>
+    <title>General Incrementer</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>General Incrementer</h1>
+
+<p>One of the major advantages of defining components in Java
+is that you can permit them to be customized via attributes. As
+an example, we might want our counter to be work with any number
+of bits traveling through it; the following two classes illustrate
+how to make this work.</p>
+
+<h2>Incrementer</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.comp.ComponentDrawContext;
+import com.cburch.logisim.comp.ComponentFactory;
+import com.cburch.logisim.comp.EndData;
+import com.cburch.logisim.comp.ManagedComponent;
+import com.cburch.logisim.data.Attribute;
+import com.cburch.logisim.data.AttributeEvent;
+import com.cburch.logisim.data.AttributeListener;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.Attributes;
+import com.cburch.logisim.data.BitWidth;
+import com.cburch.logisim.data.Location;
+import com.cburch.logisim.data.Value;
+
+/** Represents an incrementer that can work with any bit width. This component
+ * is designed to illustrate how to use attributes. */
+class Incrementer extends ManagedComponent {
+    /** The attribute representing the bit width of the input and output. */
+    static final Attribute WIDTH_ATTRIBUTE = Attributes.forBitWidth("Bit Width");
+    
+    /** The default value of the width attribute. */
+    static final BitWidth WIDTH_DEFAULT = BitWidth.create(8);
+    
+    /** Listens for changes to the width attributes, because we need such
+     * changes to be reflected in the information about ends managed by the
+     * <code>ManagedComponent</code> superclass. */
+    private class MyListener implements AttributeListener {
+        public void attributeListChanged(AttributeEvent e) { }
+        public void attributeValueChanged(AttributeEvent e) {
+            if(e.getAttribute() == WIDTH_ATTRIBUTE) computeEnds();
+        }
+    }
+    
+    /** Represents the sole instance of MyListener. (The more common
+     * idioms for dealing with listeners do not involve such a
+     * local variable, but I strongly prefer this idiom, because
+     * I often find it useful to store listeners in the listened-to
+     * object using weak references to avoid situations analogous
+     * to memory leaks when the listened-to object persists beyond
+     * the intended life of the listening object. A side effect of
+     * this is that the listener would die immediately if the listening
+     * object doesn't maintain its own strong reference; hence the
+     * instance variable. [It happens that the AttributeSet used here
+     * uses strong references, but that's no guarantee that a future
+     * version will not.])
+     */
+    private MyListener myListener = new MyListener();
+    
+    /** Constructs an incrementer at the given location with the given
+     * attributes. */
+    Incrementer(Location loc, AttributeSet attrs) {
+        super(loc, attrs, 2);
+        attrs.addAttributeListener(myListener);
+        computeEnds();
+    }
+    
+    /** Sets up the ends of this component. */
+    private void computeEnds() {
+        // Retrieve information needed for setting the ends - notice the
+        // access to the attribute set to retrieve the width.
+        Location loc = getLocation();
+        BitWidth width = (BitWidth) getAttributeSet().getValue(WIDTH_ATTRIBUTE);
+        
+        // Now set up the ends.
+        setEnd(0, loc.translate(-30, 0), width, EndData.INPUT_ONLY);
+        setEnd(1, loc,                   width, EndData.OUTPUT_ONLY);
+    }
+    
+    public ComponentFactory getFactory() {
+        return IncrementerFactory.instance;
+    }
+
+    public void propagate(CircuitState circuitState) {
+        Value in = circuitState.getValue(getEndLocation(0));
+        Value out;
+        if(in.isFullyDefined()) {
+            out = Value.createKnown(in.getBitWidth(), in.toIntValue() + 1);
+        } else if(in.isErrorValue()) {
+            out = Value.createError(in.getBitWidth());
+        } else {
+            out = Value.createUnknown(in.getBitWidth());
+        }
+        circuitState.setValue(getEndLocation(1), out, this,
+                in.getBitWidth().getWidth() + 1);
+    }
+
+    public void draw(ComponentDrawContext context) {
+        context.drawRectangle(this, "+1");
+        context.drawPins(this);
+    }
+}
+</pre>
+
+<h2>IncrementerFactory</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.comp.AbstractComponentFactory;
+import com.cburch.logisim.comp.Component;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.AttributeSets;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.data.Location;
+
+/** Manufactures <code>Incrementer</code> components. */
+class IncrementerFactory extends AbstractComponentFactory {
+    static final IncrementerFactory instance = new IncrementerFactory();
+    
+    private IncrementerFactory() { }
+    
+    public String getName() {
+        return "Incrementer";
+    }
+
+    public String getDisplayName() {
+        return "Incrementer (General)";
+    }
+    
+    /** Creates an attribute set holding all the initial default values. This
+     * is the only change from the <code>ByteIncrementerClass</code> class, where
+     * we simply kept the definition implemented in the parent class. Here, though,
+     * we want to insert the attribute. */
+    public AttributeSet createAttributeSet() {
+        return AttributeSets.fixedSet(Incrementer.WIDTH_ATTRIBUTE,
+                Incrementer.WIDTH_DEFAULT);
+    }
+
+    public Component createComponent(Location loc, AttributeSet attrs) {
+        return new Incrementer(loc, attrs);
+    }
+
+    public Bounds getOffsetBounds(AttributeSet attrs) {
+        return Bounds.create(-30, -15, 30, 30);
+    }
+
+}
+</pre>
+
+<p><strong>Next:</strong> <a href=basiccounter.html>Simple Counter</a>.</p>
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<html>
+<head>
+    <title>Byte Incrementer</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Byte Incrementer</h1>
+
+<p>Each component included in a library requires two classes to
+be defined: One class, implementing the <code>Component</code>
+interface, defines the behavior of an individual component; the
+other, implementing the <code>ComponentFactory</code> interface,
+defines behavior of the overall component and manufactures individual
+components.
+The relationship between objects of these two classes is much like
+the relationship between an <em>object</em> in Java and
+its <em>class</em>.</p>
+
+<p>Directly implementing all the methods in the <code>Component</code>
+and <code>ComponentFactory</code> interfaces is rather tedious and
+repetitive. In practice, it is far more convenient to extend the
+<code>ManagedComponent</code> and <code>AbstractComponentFactory</code>
+classes instead.</p>
+
+<p>Most of the classes relevant to defining component libraries
+is found in three libraries.
+<dl>
+
+<dt><code>com.cburch.logisim.comp</code>
+<dd>Contains classes specifically related to defining components,
+including the <code>Component</code>, <code>ComponentFactory</code>,
+<code>ManagedComponent</code>, and <code>AbstractComponentFactory</code>
+types described above.</p>
+
+<dt><code>com.cburch.logisim.data</code>
+<dd>Contains classes related to data elements associated with components,
+such as the <code>Location</code> class for representing points on the
+canvas or the <code>Value</code> class for representing values that can
+exist on a wire.</p>
+
+<dt><code>com.cburch.logisim.tools</code>
+<dd>Contains classes related to defining tools and specifying interaction
+between components and tools. (This is only necessary for the more
+specialized components.)</p>
+
+</dl></p>
+
+<h2>ByteIncrementer</h2>
+
+<p>This is a minimal example illustrating the essential elements
+to defining a component. This particular component is an incrementer,
+which takes an 8-bit input and produces an 8-bit output whose value
+is one more than its input.</p>
+
+<p>This example by itself is not enough to create a working JAR file;
+you must also provide a Library class, as illustrated in the next
+section of this guide.</p>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.comp.ComponentDrawContext;
+import com.cburch.logisim.comp.ComponentFactory;
+import com.cburch.logisim.comp.EndData;
+import com.cburch.logisim.comp.ManagedComponent;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.BitWidth;
+import com.cburch.logisim.data.Location;
+import com.cburch.logisim.data.Value;
+
+/** Implements a bare-bones custom Logisim component, whose single
+ * input is 8 bits wide, and whose output value is one more than
+ * the input value, also 8 bits wide. */
+class ByteIncrementer extends ManagedComponent {
+    // The ManagedComponent class conveniently implements just about
+    // all of the required methods. All we have to do is to tell it
+    // about the different "ends" (i.e., inputs and outputs to the
+    // component) in the constructor, and we need to implement the
+    // getFactory, propagate, and draw.
+    
+    /** The width of a byte. */
+    private static final BitWidth BIT_WIDTH = BitWidth.create(8);
+    
+    /** Constructs a component at the given location, with the given
+     * attributes. */
+    ByteIncrementer(Location loc, AttributeSet attrs) {
+        super(loc, attrs, 2);
+        // The third parameter (2) to the parent's constructor indicates how
+        // many ends the component has. It's not important that this be
+        // precisely right: The ManagedComponent uses an ArrayList to manage
+        // the ends.
+        
+        // Now we tell the ManagedComponent superclass about the ends. We
+        // assign each end a distinct index, which is used also below in
+        // the propagate method.
+        setEnd(0, loc.translate(-30, 0), BIT_WIDTH, EndData.INPUT_ONLY);
+        setEnd(1, loc,                   BIT_WIDTH, EndData.OUTPUT_ONLY);
+    }
+    
+    /** Returns the class that generated this component. */
+    public ComponentFactory getFactory() {
+        return ByteIncrementerFactory.instance;
+    }
+
+    /** Recomputes the outputs of this component. The <code>circuitState</code>
+     * parameter maintains information about the current state of the
+     * circuit. */
+    public void propagate(CircuitState circuitState) {
+        // Retrieve the current value coming into this component.
+        Value in = circuitState.getValue(getEndLocation(0));
+        
+        // Compute the output.
+        Value out;
+        if(in.isFullyDefined()) {
+            // If all input bits are 0 or 1, our input is a valid number, and
+            // so can be our output.
+            out = Value.createKnown(BIT_WIDTH, in.toIntValue() + 1);
+        } else if(in.isErrorValue()) {
+            // If any input bits are "errors" (which usually arise from
+            // conflicting values on a wire), then we send out all error bits.
+            out = Value.createError(BIT_WIDTH);
+        } else {
+            // Otherwise, some input bits are unspecified. To keep things
+            // simple, we'll indicate that all output bits are also unspecified.
+            out = Value.createUnknown(BIT_WIDTH);
+        }
+        
+        // Now propagate the output into the circuit state. The parameters
+        // here indicate the location affected, the value sent there, the
+        // originating component, and the delay. The delay needs to be positive,
+        // and it should bear some resemblance to the component's depth, but
+        // the exact value isn't too important. The incrementing component
+        // would probably be nine levels deep, so I use that value here.
+        circuitState.setValue(getEndLocation(1), out, this, 9);
+    }
+
+    /** Draws this component using the data contained in the parameter. */
+    public void draw(ComponentDrawContext context) {
+        // The ComponentDrawContext class contains several convenience
+        // methods for common operations. I've kept the drawing simple
+        // by just sticking to these operations.
+        context.drawRectangle(this, "+1");
+        context.drawPins(this);
+    }
+}
+</pre>
+
+<h2>ByteIncrementerFactory</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.comp.AbstractComponentFactory;
+import com.cburch.logisim.comp.Component;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.data.Location;
+
+/** The object that manufactures <code>ByteIncrementer</code>s. */
+class ByteIncrementerFactory extends AbstractComponentFactory {
+    // The AbstractComponentFactory parent class conveniently implements
+    // just about all the methods we need for ComponentFactory. All we really
+    // need are the getName, createComponent, and getOffsetBounds methods
+    // here.
+    
+    /** The sole instance of this class. */
+    static final ByteIncrementerFactory instance = new ByteIncrementerFactory();
+    
+    /** Constructs an instance. There is no reason to have multiple instances
+     * of this class, so I make the constructor method private to restrict creation
+     * to within this class only. */
+    private ByteIncrementerFactory() { }
+    
+    /** Returns the name of this component class, as it is stored in a file. */
+    public String getName() {
+        return "Byte Incrementer";
+    }
+
+    /** Returns the name of this component class as the user should see it. */
+    public String getDisplayName() {
+        // This may well be different from what is returned by getName.
+        // The two most likely reasons for having different strings are
+        // that we decide on a more user-friendly name in a future version
+        // but we don't want to change the representation within files (for
+        // backwards compatibility), or that we want to adapt to the user's
+        // chosen language. (Logisim doesn't support internationalization
+        // right now, but it is capable of doing so.)
+        return "Incrementer (8-Bit)";
+    }
+
+    /** Manufactures and returns a component of this component class. */
+    public Component createComponent(Location loc, AttributeSet attrs) {
+        return new ByteIncrementer(loc, attrs);
+    }
+
+    /** Returns a rectangle indicating where the component would appear
+     * if it were dropped at the origin. */
+    public Bounds getOffsetBounds(AttributeSet attrs) {
+        // In this case, the component is a 30x30 rectangle, with the
+        // origin on the midpoint of the east side. So the x-coordinate
+        // of the top left corner is -30, the y-coordinate is -15, and
+        // of course the width and height are both 30.
+        return Bounds.create(-30, -15, 30, 30);
+    }
+    
+    // We could customize the icon associated with the tool by overriding
+    // the paintIcon method here.
+
+    // We could also override the drawGhost method to customize the appearance
+    // of the "ghost" drawn as the user moves the tool across the canvas. By
+    // default, the ghost is a rectangle corresponding to getOffsetBounds. A
+    // ByteIncrementer is just such a rectangle, so there's no need to override.
+}
+</pre>
+
+<p><strong>Next:</strong> <a href=library.html>Library Class</a>.</p>
+
+</body>
+</html>

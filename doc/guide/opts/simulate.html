@@ -1,0 +1,53 @@
+<html>
+<head>
+	<title>The Simulation tab</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>The Simulation tab</h1>
+
+<p>The Simulation tab allows configuration of the algorithm used for
+simulating circuits. These parameters apply to all circuits being
+simulated in the same window, even for circuits that exist in other
+libraries loaded within the project.</p>
+
+<center><img width=460 height=389 src=simulate.png></center>
+
+<ul>
+
+<li> The <strong>Add Noise To Component Delays</strong> check box
+allows you to enable or disable the random noise that is added to the
+delays of components. The internal simulation uses a hidden clock for
+its simulation, and to provide a somewhat realistic simulation, each
+component (excluding wires and splitters) has a delay between when it
+receives an input and when it emits an output. If this option is
+enabled, Logisim will occassionally (about once every 16
+component reactions) make a component take one click longer than
+normal.  This randomness is added specifically for handling latch
+circuit (as below): Without the random noise, the circuit oscillates,
+since the two gates will work in lockstep; but with random noise added,
+one gate will eventually outrun the other.
+<center><img width=170 height=111 src=latch.png></center>
+I recommend keeping this option on. The option exists in case you want
+deterministic circuit behavior. (Also, the random noise feature is
+relatively new to Logisim, and it could possibly lead to unanticipated
+bugs in the simulation.)</p>
+
+<li> The <strong>Iterations Until Oscillation</strong> combo box
+specifies how long to simulate a circuit before deciding that it is
+oscillating. The number represents the number of clicks of the internal
+hidden clock (a simple gate takes just one click). The default of 1,000
+is good enough for almost all purposes, even for large circuits. But you
+may want to increase the number of iterations if you are working with a
+circuit where Logisim reports false oscillations; I can imagine problems
+with a circuit that incorporates many of the above latch circuits
+causing such a problem.  You may want to decrease the number of
+iterations if you are working with a circuit that in prone to
+oscillating and you are using an unusually slow processor.</p>
+
+</ul>
+
+<p><strong>Next:</strong> <a href=toolbar.html>The Toolbar tab</a>.</p>
+
+</body>
+</html>

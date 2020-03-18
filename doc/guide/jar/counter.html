@@ -1,0 +1,215 @@
+<html>
+<head>
+    <title>Counter</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Counter</h1>
+
+<p>This orientation to the Logisim libraries concludes with a
+fairly sophisticated counter that allows the user to alter its
+current value using the Poke Tool. This involves providing
+an implementation of <code>Component</code>'s <code>getFeature</code>
+method so that it can return a <code>Pokable</code> implementation;
+the <code>Pokable</code> implementation provides access to a
+<code>Caret</code> implementation which can handle mouse and key
+events appropriately.</p>
+
+<p>This example also illustrates what I consider a better way of
+structuring a library of components: Having a single class for each
+component, with the factory class nested privately, along with any
+supporting classes.</p>
+
+<h2>Counter</h2>
+
+<pre>
+package com.cburch.incr;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+
+import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.comp.AbstractComponentFactory;
+import com.cburch.logisim.comp.Component;
+import com.cburch.logisim.comp.ComponentFactory;
+import com.cburch.logisim.comp.ComponentUserEvent;
+import com.cburch.logisim.comp.EndData;
+import com.cburch.logisim.data.Attribute;
+import com.cburch.logisim.data.AttributeEvent;
+import com.cburch.logisim.data.AttributeListener;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.AttributeSets;
+import com.cburch.logisim.data.Attributes;
+import com.cburch.logisim.data.BitWidth;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.data.Location;
+import com.cburch.logisim.data.Value;
+import com.cburch.logisim.tools.AbstractCaret;
+import com.cburch.logisim.tools.Caret;
+import com.cburch.logisim.tools.Pokable;
+
+/** Implements a counter for an arbitrary number of bits, whose value can be
+ * modified interactively by the user. The primary purpose of this example is
+ * to illustrate the addition of user interaction; the entry point for this
+ * interaction is via the <code>getFeature</code> method.
+ */
+class Counter extends SimpleCounter {
+    // Note that I've extended SimpleCounter to inherit all of its logic
+    // for propagation and drawing.
+    
+    // The previous examples have included two separate classes for each
+    // component. In practice, though, I personally prefer having just
+    // one file per component type. The most convenient technique for this
+    // is to make a private nested class for the factory, and to include
+    // a constant referring to the factory.
+    public static final ComponentFactory factory = new Factory();
+    
+    // I'll restrict the maximum width to 12, since the rectangle drawn doesn't
+    // have room to display more than 12 bits.
+    static final Attribute WIDTH_ATTRIBUTE = Attributes.forBitWidth("Bit Width", 1, 12);
+    static final BitWidth WIDTH_DEFAULT = BitWidth.create(8);
+    
+    private static class Factory extends AbstractComponentFactory {
+        private Factory() { }
+        
+        public String getName() {
+            return "Counter";
+        }
+
+        public String getDisplayName() {
+            return "Counter";
+        }
+
+        public Component createComponent(Location loc, AttributeSet attrs) {
+            return new Counter(loc, attrs);
+        }
+
+        public Bounds getOffsetBounds(AttributeSet arg0) {
+            return Bounds.create(-30, -15, 30, 30);
+        }
+        
+        public AttributeSet createAttributeSet() {
+            return AttributeSets.fixedSet(Counter.WIDTH_ATTRIBUTE,
+                    Counter.WIDTH_DEFAULT);
+        }
+
+    }
+    
+    /** In addition to listening for changes to the width attribute (as with
+     * the <code>Incrementer</code> example), this also serves for manufacturing
+     * the "caret" for interacting with the user. */
+    private class MyListener implements AttributeListener, Pokable {
+        public void attributeListChanged(AttributeEvent e) { }
+        public void attributeValueChanged(AttributeEvent e) {
+            if(e.getAttribute() == WIDTH_ATTRIBUTE) computeEnds();
+        }
+        
+        /** Manufactures the caret for interacting with the user. */
+        public Caret getPokeCaret(ComponentUserEvent event) {
+            return new PokeCaret(event.getCircuitState());
+        }
+    }
+    
+    /** Implements all the functionality that interacts with the user when
+     * poking this component. */
+    private class PokeCaret extends AbstractCaret {
+        /** The circuit state the user is poking with. */
+        CircuitState circuitState;
+        
+        /** The initial value. We use this in case the user cancels the editing
+         * to return to the initial value. (Canceling an edit is not currently
+         * supported in Logisim, but it may be in a future version.) */
+        Value initValue;
+
+        PokeCaret(CircuitState circuitState) {
+            this.circuitState = circuitState;
+            
+            CounterState initial = Counter.this.getCounterState(circuitState);
+            initValue = initial.getValue();
+            setBounds(Counter.this.getBounds());
+        }
+
+        /** Draws an indicator that the caret is being selected. Here, we'll draw
+         * a red rectangle around the value. */
+        public void draw(Graphics g) {
+            Bounds bds = Counter.this.getBounds();
+            BitWidth width = (BitWidth) Counter.this.getAttributeSet().getValue(WIDTH_ATTRIBUTE);
+            int len = (width.getWidth() + 3) / 4;
+
+            g.setColor(Color.RED);
+            int wid = 7 * len + 2; // width of caret rectangle
+            int ht = 16; // height of caret rectangle
+            g.drawRect(bds.getX() + (bds.getWidth() - wid) / 2,
+                    bds.getY() + (bds.getHeight() - ht) / 2, wid, ht);
+            g.setColor(Color.BLACK);
+        }
+
+        /** Processes a key by just adding it onto the end of the current value. */
+        public void keyTyped(KeyEvent e) {
+            // convert it to a hex digit; if it isn't a hex digit, abort.
+            int val = Character.digit(e.getKeyChar(), 16);
+            if(val < 0) return;
+
+            // compute the next value.
+            BitWidth width = (BitWidth) Counter.this.getAttributeSet().getValue(WIDTH_ATTRIBUTE);
+            CounterState state = Counter.this.getCounterState(circuitState);
+            Value newValue = Value.createKnown(width,
+                    (state.getValue().toIntValue() * 16 + val) & width.getMask());
+            
+            // change the value immediately in the component's state, and propagate
+            // it immediately.
+            state.setValue(newValue);
+            circuitState.setValue(Counter.this.getEndLocation(1), newValue,
+                Counter.this, 1);
+        }
+
+        /** Commit the editing. Since this caret modifies the state as the user edits,
+         * there is nothing to do here. */
+        public void stopEditing() { }
+        
+        /** Cancel the editing. */
+        public void cancelEditing() {
+            Counter.this.getCounterState(circuitState).setValue(initValue);
+        }
+    }
+
+    // The listener instance variable, the constructor, and computeEnds all
+    // proceeds just as in the Incrementer class.
+    private MyListener myListener = new MyListener();
+    
+    private Counter(Location loc, AttributeSet attrs) {
+        super(loc, attrs);
+        attrs.addAttributeListener(myListener);
+        computeEnds();
+    }
+    
+    private void computeEnds() {
+        Location loc = getLocation();
+        BitWidth width = (BitWidth) getAttributeSet().getValue(WIDTH_ATTRIBUTE);
+        setEnd(0, loc.translate(-30, 0), BitWidth.ONE, EndData.INPUT_ONLY);
+        setEnd(1, loc,                   width,        EndData.OUTPUT_ONLY);
+    }
+    
+    /** Retrieves a "special feature" associated with this component. Poke support
+     * is considered a special feature. When a user clicks on the component with
+     * the poke tool, Logisim will call this method with the key being the Pokable
+     * class. We should return a Pokable object in response, which it can use to
+     * access the caret for interaction.
+     */
+    public Object getFeature(Object key) {
+        if(key == Pokable.class) return myListener;
+        return super.getFeature(key);
+    }
+    
+    public ComponentFactory getFactory() {
+        return factory;
+    }
+}
+</pre>
+
+
+<p><strong>Next:</strong> <a href=guide.html>Guidelines</a>.</p>
+
+</body>
+</html>

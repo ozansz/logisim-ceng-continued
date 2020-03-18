@@ -1,0 +1,66 @@
+<html>
+<head>
+	<title>The International tab</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>The International tab</h1>
+
+<p>These preferences support options allowing Logisim to be used in many
+countries.
+<center><img width=452 height=386 src=intl.png></center>
+The tab includes three options.
+<ul>
+
+<li><b>Gate Shape:</b> Logisim supports three standards for drawing gates:
+<em>shaped</em> gates, <em>rectangular</em> gates, and <em>DIN 40700</em>
+gates. The following table illustrates the
+distinction.
+<center><img width=412 height=176 src=gates.png></center>
+Because the shaped style tends to be more popular in the U.S., while the
+rectangular style tends to be more popular in Europe, some people refer to
+these styles according to these regions; the region-neutral terms
+<em>shaped</em> and <em>rectangular</em> are preferred.
+The DIN 40700 standard was a standard for drafting digital and analog
+electronic components adopted by DIN, a German standards organization. DIN
+adopted the rectangular standard for digital components in 1976, but some
+engineers continue to use the older style; they appear to be increasingly
+rare.</p>
+
+<p>Logisim does not follow any standard exactly; it steers a middle
+ground to allow switching between them. In particular, the shaped gates
+are more square than the dimensions defined by the relevant IEEE
+standard. And, although XOR and XNOR gates really ought to be the same
+width as OR and NOR gates with the rectangular style, they are not
+because of difficulties compressing the shaped-XOR gate.</p>
+
+<p>Currently, the rectangular OR gate is drawn with a "&gt;0" label
+rather than the proper label illustrated above, because many platforms
+still don't support a full Unicode character set.</p>
+
+<li><b>Language:</b>
+Change between languages. The current version is supplied with
+both an English translation and a Spanish translation. The Spanish
+translation has been contributed by Pablo Leal Ramos, from Spain.</p>
+
+<p>I welcome translations of Logisim into other languages! If you
+are interested, contact me, Carl Burch. This will not be a commitment:
+I will be happy to hear of your interest, and I will tell
+you whether I know of somebody who is working on it already,
+prepare a version for you to work with, and send you instructions.
+The translation process does not require an understanding of Java.</p>
+
+<li><b>Replace Accented Characters:</b>
+Some platforms have poor support for characters (such as
+&ntilde; or &ouml;) that do not appear in the 7-bit ASCII character
+set. When this is checked, Logisim will replace all instances of the
+characters with the appropriate equivalent 7-bit ASCII characters.
+The checkbox is disabled when the current language does not have
+any equivalents available (as with English).</p>
+
+</ul>
+
+<p><strong>Next:</strong> <em><a href="exp.html">The Experimental tab</a></em>.</p>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Library Class</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Library Class</h1>
+
+<p>The access point for the JAR library is a class that extends the
+<code>Library</code> class. The library's main job is to list the tools that are
+available through the library; most often, the tools are all tools
+to add the various components defined - that is, instances of the
+<code>AddTool</code> class working with different component factories.</p>
+
+<h2>Components</h2>
+
+<pre>
+package com.cburch.incr;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.cburch.logisim.tools.AddTool;
+import com.cburch.logisim.tools.Library;
+import com.cburch.logisim.tools.Tool;
+
+/** The library of components that the user can access. */
+public class Components extends Library {
+    /** The list of all tools contained in this library. Technically,
+     * libraries contain tools, which is a slightly more general concept
+     * than component classes; practically speaking, though, there
+     * shouldn't be much reason to invent tools beyond new instances of
+     * <code>AddTool</code>.
+     */
+    private List tools;
+    
+    /** Constructs an instance of this library. This constructor is how
+     * Logisim accesses first when it opens the JAR file: It looks for
+     * a no-arguments constructor method of the user-designated class.
+     */
+    public Components() {
+        tools = Arrays.asList(new Tool[] {
+                new AddTool(ByteIncrementerFactory.instance),
+                new AddTool(IncrementerFactory.instance),
+                new AddTool(SimpleCounterFactory.instance),
+                new AddTool(Counter.factory),
+        });
+    }
+    
+    /** Returns the standard name of the library. Actually, this string
+     * won't be used by Logisim. */
+    public String getName() {
+        return Components.class.getName();
+    }
+    
+    /** Returns the name of the library that the user will see. */ 
+    public String getDisplayName() {
+        return "Increment";
+    }
+    
+    /** Returns a list of all the tools available in this library. */
+    public List getTools() {
+        return tools;
+    }
+}
+</pre>
+
+<p><strong>Next:</strong> <a href=genincr.html>General Incrementer</a>.</p>
+
+</body>
+</html>

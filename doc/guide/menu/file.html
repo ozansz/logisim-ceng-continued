@@ -1,0 +1,119 @@
+<html>
+<head>
+	<title>The File menu</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>The File menu</h1>
+
+<dl>
+
+<dt><strong>New</strong>
+<dd>Opens a new project in a new window. The project will
+initially be a copy of <a href=../prefs/template.html>the
+currently selected template</a>.</p>
+
+<dt><strong>Open...</strong>
+<dd>Opens an existing file as a project in a new window.</p>
+
+<p>You can open files saved in Version 1.0<em>X</em> of Logisim,
+but there may be some slight conversion problems for complex
+circuits. Most notably, Logisim 1.0<em>X</em> computes subcircuit
+locations in a very different way, and you will need manually to go
+through all circuits and move the subcircuits to their correct
+locations.</p>
+
+<dt><strong>Close</strong>
+<dd>Closes all windows associated with the currently viewed
+project.</p>
+
+<dt><strong>Save</strong>
+<dd>Saves the currently viewed project, overwriting what was
+previously in the file.</p>
+
+<dt><strong>Save As...</strong>
+<dd>Saves the currently viewed project, prompting the user to
+save into a different file than before.</p>
+
+<dt><strong>Export As GIF...</strong>
+<dd>Creates GIF image(s) corresponding to circuits.
+The configuration dialog box is described below.</p>
+
+<dt><strong>Print...</strong>
+<dd>Sends circuit(s) to a printer. The configuration dialog box
+is described below.</p>
+
+<dt><strong>Preferences...</strong>
+<dd>Displays the <a href=../prefs/index.html>application
+preferences</a> window. (On Mac OS systems, this will appear
+in the Logisim menu.)</p>
+
+<dt><strong>Exit</strong>
+<dd>Closes all currently open projects and terminates Logisim.
+(On Mac OS systems, this will appear
+as Quit in the Logisim menu.)</p>
+
+</dl>
+
+<h2>Configuring Export</h2>
+
+<p>When you select Export As GIF..., Logisim displays a dialog box
+with three options.
+<ul>
+
+<li><b>Circuits:</b> A list where you can select one or more circuits
+that should be exported into GIF files. (Empty circuits are not
+displayed as options.)</p>
+
+<li><b>Scale Factor:</b> You can scale the images as they are dumped
+into GIF files using this slider.</p>
+
+<li><b>Printer View:</b> Whether to use
+``<a href=../opts/canvas.html>printer view</a>'' in exporting
+the circuits.
+
+</ul>
+After clicking OK, Logisim will display a file selection dialog
+box. If you have selected one circuit, select the file into which
+the GIF should be placed. If you have selected multiple circuits,
+select a directory where the files should be placed; Logisim will
+name the images based on the circuits' names (<tt>main.gif</tt>,
+for example).</p>
+
+<h2>Configuring Print</h2>
+
+<p>When you choose Print..., Logisim displays a dialog box for
+configuring what is printed.
+<ul>
+
+<li><b>Circuits:</b> A list where you can select one or more circuits
+to be printed. (Empty circuits are not
+displayed as options.) Logisim will print one circuit per page. If the circuit is too
+large for the page, the image will be scaled down to fit.</p>
+
+<li><b>Header:</b> Text that should appear centered at the top of
+each page. The following substitutions will be made into the text.
+<center><table>
+<tr><td><tt>%n</tt></td><td>Name of circuit on page</td></tr>
+<tr><td><tt>%p</tt></td><td>Page number</td></tr>
+<tr><td><tt>%P</tt></td><td>Total page count</td></tr>
+<tr><td><tt>%%</tt></td><td>A single percent sign ('%')</td></tr>
+</table></center></p>
+
+<li><b>Rotate To Fit:</b> If checked, then Logisim will rotate
+each circuit by 90 degrees when the circuit is too large to
+fit onto the page and it does not need to be scaled as
+small when rotated 90 degrees.</p>
+
+<li><b>Printer View:</b> Whether to use
+``<a href=../opts/canvas.html>printer view</a>'' in printing
+the circuits.
+
+</ul>
+After clicking OK, Logisim will display the standard page setup
+dialog box before printing the circuits.</p>
+
+<p><strong>Next:</strong> <a href=edit.html>The Edit menu</a>.</p>
+
+</body>
+</html>

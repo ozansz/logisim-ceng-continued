@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title>Wire colors</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Wire colors</h1>
+
+<p>We are now in a position to summarize the full rainbow of
+colors that Logisim wires can take on. The following
+little circuit illustrates all of them at once.
+<center><img width=192 height=215 src=colors.png></center></p>
+
+<ul>
+
+<li><strong>Gray:</strong> The wire's bit width is unknown. This
+occurs because the wire is not attached to any components' inputs
+and outputs. (All inputs and outputs have a defined bit width.)</p>
+
+<li><strong>Blue:</strong> The wire is for carrying a one-bit value, but
+the value it is carrying is not known. In the above example, this is
+occurring because the NOT gate's input is unknown, and so its output
+is also unknown.</p>
+
+<li><strong>Dark green:</strong> The wire is carrying a one-bit 0
+value.</p>
+
+<li><strong>Bright green:</strong> The wire is carrying a one-bit 1
+value.</p>
+
+<li><strong>Black:</strong> The wire is carrying a multi-bit value.
+Some or all of the bits may not be specified.</p>
+
+<li><strong>Red:</strong> The wire is carrying an error value.
+This usually arises because conflicting values on the wire. (The other
+possibility would be that a library component is programmed to emit
+an error value for another reason; in the built-in libraries, though,
+error values arise only from propagating other error values.) In
+the above example, we have one input pin placing a 0 on the wire and
+another placing a 1 on the wire, causing a conflict. Multi-bit wires
+will turn red when any of the bits carried are error values.</p>
+
+<li><strong>Orange:</strong> The components attached to the wire
+do not agree in bit width. An orange wire is effectively "broken":
+It does not carry values between components.</p>
+
+</ul>
+
+<p><strong>Next:</strong> <em><a href=../index.html>User's Guide</a></em>.</p>
+
+</body>
+</html>

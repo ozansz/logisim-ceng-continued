@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+use strict;
+
+for my $src (<../en/*.properties>) {
+	my $dst = $src;
+	$dst =~ s/_en/_hu/;
+	$dst =~ s/..\/en\///;
+	open FIN, "<${src}";
+	open FOUT, ">${dst}";
+	while(<FIN>) {
+		chomp;
+		if(/=/ && !/^accentReplacements /) {
+			s/([^=]*[^ =]) *=.*/$1 = $1/;
+		}
+		print FOUT "${_}\n";
+	}
+	close FOUT;
+	close FIN;
+}

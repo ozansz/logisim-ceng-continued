@@ -1,0 +1,71 @@
+<html>
+<head>
+	<title>Command-line options</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Command-line options</h1>
+
+<p>You can configure Logisim's application preferences via command
+line options.  This can be particularly useful in a laboratory of
+single-student computers where you want Logisim to start up the same
+for students every time, regardless of how previous students may have
+configured the program.</p>
+
+<p>The overall command-line syntax is as follows.
+<blockquote><pre>
+java -jar <em><b>jarFileName</b></em> <em>[options]</em> <em>[filenames]</em>
+</pre></blockquote>
+The optional additional files named on the command line will be
+opened as separate windows within Logisim.</p>
+
+<p>The following example starts Logisim in its basic configuration.
+<blockquote><pre>
+java -jar <em><b>jarFileName</b></em> -plain -gates shaped -locale en
+</pre></blockquote></p>
+
+<p>Supported options include the following.
+<dl>
+
+<dt><tt>-plain</tt>
+<dt><tt>-empty</tt>
+<dt><tt>-template <b><em>templateFile</em></b></tt>
+<dd>Configures the template for Logisim to use.</p>
+
+<dt><tt>-gates <em>[<b>shaped</b>|<b>rectangular</b>]</em></tt>
+<dd>Configures which type of gate to use.</p>
+
+<dt><tt>-locale <em><b>localeIdentifier</b></em></tt>
+<dd>Configures which translation to use. As of this writing, the
+supported locales include:
+<center><table>
+<tr><th><tt>en</tt></th><td>English</td></tr>
+<tr><th><tt>es</tt></th><td>Spanish</td></tr>
+</table></center></p>
+
+<dt><tt>-accents <em>[<b>yes</b>|<b>no</b>]</em></tt>
+<dd>This is only relevant for languages that use characters
+outside the 7-bit ASCII character set; this would include
+languages using accented characters, and it would not
+include English.
+If <em>no</em>, characters outside the 7-bit ASCII character
+set are replaced with equivalents appropriate to the language;
+this would be useful for Java/OS combinations where such characters
+are not supported well.</p>
+
+
+<dt><tt>-nosplash</tt>
+<dd>Hides the initial Logisim splash screen.</p>
+
+<dt><tt>-help</tt>
+<dd>Displays a summary of the command line options.</p>
+
+<dt><tt>-version</tt>
+<dd>Displays the Logisim version number.</p>
+
+</dl></p>
+
+<p><strong>Next:</strong> <em><a href=../index.html>User's Guide</a></em>.</p>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<html>
+<head>
+    <title>Simple Counter</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Simple Counter</h1>
+
+<p>Often we want components that aren't exclusively combinational
+in nature - that is, we want the component to have some memory.
+There is an important subtlety in defining such components: You
+can't have the component itself store the state, because an
+individual component can appear many times in the same circuit.
+It can't appear directly within a circuit multiple times, but
+it can appear multiple times if it appears in a subcircuit that
+is used several times.</p>
+
+<p>The solution is to create a new class for representing the
+object's current state, and to associate instances of this with
+the component through the parent circuit's state. In this example,
+which implements an edge-triggered 8-bit counter, we define a
+<code>CounterState</code> class to accomplish this, in addition
+to the <code>Component</code> and <code>ComponentFactory</code>
+implementations that the previous examples have illustrated.
+The <code>CounterState</code> object remembers both the counter's
+current value, as well as the last clock input seen (to detect
+rising edges).</p>
+
+<h2>SimpleCounter</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.circuit.CircuitState;
+import com.cburch.logisim.comp.ComponentDrawContext;
+import com.cburch.logisim.comp.ComponentFactory;
+import com.cburch.logisim.comp.EndData;
+import com.cburch.logisim.comp.ManagedComponent;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.BitWidth;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.data.Direction;
+import com.cburch.logisim.data.Location;
+import com.cburch.logisim.data.Value;
+import com.cburch.logisim.util.GraphicsUtil;
+import com.cburch.logisim.util.StringUtil;
+
+/** Represents a simple 8-bit counter. This example illustrates how a
+ * component can maintain its own internal state. */
+class SimpleCounter extends ManagedComponent {
+    /** The width of input and output. */
+    private static final BitWidth BIT_WIDTH = BitWidth.create(8);
+    
+    // Note what's not here: We don't have any instance variables referring
+    // to the counter's state. Using instance variables to refer to state
+    // would be a major bug, because this component may appear in a circuit
+    // that is used several times as a subcircuit to another circuit. Thus,
+    // this single component would actually appear many times in the overall
+    // circuit. Any instance variables storing state would lead to weird
+    // interactions among the states. Instead, we need to store all state
+    // information in an object stashed into a CircuitState.
+    
+    SimpleCounter(Location loc, AttributeSet attrs) {
+        super(loc, attrs, 2);
+        setEnd(0, loc.translate(-30, 0), BitWidth.ONE, EndData.INPUT_ONLY);
+        setEnd(1, loc,                   BIT_WIDTH,    EndData.OUTPUT_ONLY);
+    }
+    
+    public ComponentFactory getFactory() {
+        return SimpleCounterFactory.instance;
+    }
+
+    public void propagate(CircuitState circuitState) {
+        // Here I retrieve the state associated with this component via
+        // a helper method. In this case, the state is in a CounterState
+        // object.
+        CounterState state = getCounterState(circuitState);
+
+        Value clk = circuitState.getValue(getEndLocation(0));
+        if(state.getLastClock() == null ||
+                (state.getLastClock() == Value.FALSE && clk == Value.TRUE)) {
+            // Either the state was just created, or else we're on a rising edge
+            // for the clock input; in either case, increment the counter.
+            Value newValue = Value.createKnown(BIT_WIDTH,
+                    state.getValue().toIntValue() + 1);
+            circuitState.setValue(getEndLocation(1), newValue, this, 9);
+            state.setValue(newValue);
+        }
+        state.setLastClock(clk);
+        
+        // (You might be tempted to determine the counter's current value
+        // via circuitState.getValue(getEndLocation(1)). This is erroneous,
+        // though, because another component may be pushing a value onto
+        // the same wire, which could lead to conflicts that don't really
+        // represent the value the counter is emitting.)
+    }
+
+    public void draw(ComponentDrawContext context) {
+        context.drawRectangle(this);
+        context.drawClock(this, 0, Direction.EAST);
+        context.drawPin(this, 1);
+        
+        // I'd like to display the current counter value centered within the
+        // rectangle. However, if the context says not to show state (as
+        // when generating printer output), then I shouldn't do this.
+        if(context.getShowState()) {
+            CounterState state = getCounterState(context.getCircuitState());
+            Bounds bds = getBounds();
+            GraphicsUtil.drawCenteredText(context.getGraphics(),
+                    StringUtil.toHexString(BIT_WIDTH.getWidth(), state.getValue().toIntValue()),
+                    bds.getX() + bds.getWidth() / 2,
+                    bds.getY() + bds.getHeight() / 2);
+        }
+    }
+    
+    /** Retrieves the state associated with this counter in the circuit state,
+     * generating the state if necessary.
+     */
+    protected CounterState getCounterState(CircuitState circuitState) {
+        CounterState state = (CounterState) circuitState.getData(this);
+        if(state == null) {
+            // If it doesn't yet exist, then we'll set it up with our default
+            // values and put it into the circuit state so it can be retrieved
+            // in future propagations.
+            state = new CounterState(null, Value.createKnown(BIT_WIDTH, -1));
+            circuitState.setData(this, state);
+        }
+        return state;
+    }
+
+}
+</pre>
+
+<h2>CounterState</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.comp.ComponentState;
+import com.cburch.logisim.data.Value;
+
+/** Represents the state of a counter. */
+class CounterState implements ComponentState, Cloneable {
+    /** The last clock input value observed. */
+    private Value lastClock;
+    
+    /** The current value emitted by the counter. */
+    private Value value;
+
+    /** Constructs a state with the given values. */
+    public CounterState(Value lastClock, Value value) {
+        this.lastClock = lastClock;
+        this.value = value;
+    }
+
+    /** Returns a copy of this object. */
+    public Object clone() {
+        // We can just use what super.clone() returns: The only instance variables are
+        // Value objects, which are immutable, so we don't care that both the copy
+        // and the copied refer to the same Value objects. If we had mutable instance
+        // variables, then of course we would need to clone them.
+        try { return super.clone(); }
+        catch(CloneNotSupportedException e) { return null; }
+    }
+    
+    /** Returns the last clock observed. */
+    public Value getLastClock() {
+        return lastClock;
+    }
+    
+    /** Updates the last clock observed. */
+    public void setLastClock(Value value) {
+        lastClock = value;
+    }
+    
+    /** Returns the current value emitted by the counter. */
+    public Value getValue() {
+        return value;
+    }
+    
+    /** Updates the current value emitted by the counter. */
+    public void setValue(Value value) {
+        this.value = value;
+    }
+}
+</pre>
+
+<h2>SimpleCounterFactory</h2>
+
+<pre>
+package com.cburch.incr;
+
+import com.cburch.logisim.comp.AbstractComponentFactory;
+import com.cburch.logisim.comp.Component;
+import com.cburch.logisim.data.AttributeSet;
+import com.cburch.logisim.data.Bounds;
+import com.cburch.logisim.data.Location;
+
+/** Manufactures simple 8-bit counters. This example illustrates how a
+ * component can maintain its own internal state. All of the code relevant
+ * to state, though, appears in the <code>SimpleCounter</code> and
+ * <code>CounterState</code> classes. */
+class SimpleCounterFactory extends AbstractComponentFactory {
+    static final SimpleCounterFactory instance = new SimpleCounterFactory();
+    
+    private SimpleCounterFactory() { }
+    
+    public String getName() {
+        return "Simple Counter";
+    }
+
+    public String getDisplayName() {
+        return "Counter (Simple)";
+    }
+
+    public Component createComponent(Location loc, AttributeSet attrs) {
+        return new SimpleCounter(loc, attrs);
+    }
+
+    public Bounds getOffsetBounds(AttributeSet arg0) {
+        return Bounds.create(-30, -15, 30, 30);
+    }
+
+}
+</pre>
+
+<p><strong>Next:</strong> <a href=counter.html>Counter</a>.</p>
+
+</body>
+</html>

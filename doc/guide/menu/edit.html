@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title>The Edit menu</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>The Edit menu</h1>
+
+<dl>
+
+<dt><strong>Undo <em>XX</em></strong>
+<dd>Undoes the most recently completed action affecting how the
+circuit would be saved in a file. Note that this does not
+include changes to the circuit state (as with manipulations
+performed by the Poke Tool).</p>
+
+<dt><strong>Cut</strong>
+<dd>Removes the currently selected components from the circuit onto
+Logisim's clipboard.</p>
+
+<p><strong>Note:</strong> Logisim's clipboard is maintained separately
+from the clipboard for the overall system; as a result, cut/copy/paste
+will not work across different applications, even including other
+running copies of Logisim. If, however, you have multiple
+projects open under the same Logisim process, then you should be
+able to cut/copy/paste between them.</p>
+
+<dt><strong>Copy</strong>
+<dd>Copies the currently selected components in the circuit onto
+Logisim's clipboard. (See the note under the Cut menu
+item.)</p>
+
+<dt><strong>Paste</strong>
+<dd>Pastes the components on Logisim's clipboard into the current
+selection.  (See the note under the Cut menu item.)</p>
+
+<p>When you paste components, they will not immediately be
+dropped; instead, they will be drawn in light gray. They will
+not actually be ``dropped'' into the circuit until you either
+move the selection or change the selection so that the
+components are no longer in it.</p>
+
+<p>The reason for this odd behavior is this: To be consistent with
+its other behavior, Logisim must immediately merge any wires as soon
+as they are dropped into a circuit; this merging process changes
+existing wires in the circuit.  When you paste wires from the
+clipboard, however, you may to place them in a different location,
+and the changing inherent in the merging process would be against
+your wishes.</p>
+
+<dt><strong>Delete</strong>
+<dd>Removes all components in the current selection from the
+circuit.</p>
+
+<dt><strong>Select All</strong>
+<dd>Selects all components in the current circuit.</p>
+
+</dl>
+
+<p><strong>Next:</strong> <a href=project.html>The Project menu</a>.</p>
+
+</body>
+</html>

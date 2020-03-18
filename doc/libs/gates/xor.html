@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>XOR/XNOR/Odd Parity/Even Parity Gate</title>
+</head>
+
+<body bgcolor=FFFFFF>
+
+<table><tr><td>
+<img align=center height=32 width=32 src=../../icons/xorGate.gif>
+<img align=center height=32 width=32 src=../../icons/xnorGate.gif>
+<img align=center height=32 width=32 src=../../icons/parityOddGate.gif>
+<img align=center height=32 width=32 src=../../icons/parityEvenGate.gif><br>
+<img align=center height=32 width=32 src=../../icons/xorGateRect.gif>
+<img align=center height=32 width=32 src=../../icons/xnorGateRect.gif>
+<img align=center height=32 width=32 src=../../icons/parityOddGate.gif>
+<img align=center height=32 width=32 src=../../icons/parityEvenGate.gif>
+</td><td valign=center><h1><em>XOR/XNOR/Odd Parity/Even Parity Gate</em></h1></table>
+
+<p><table>
+<tr><td><strong>Library:</strong></td>
+	<td><a href=index.html>Base</a></td></tr>
+<tr><td><strong>Introduced:</strong></td>
+	<td>2.0 Beta 1 for XOR/Odd/Even; 2.0 Beta 6 for XNOR</td></tr>
+<tr><td valign=top><strong>Appearance:</strong></td>
+	<td valign=top><img src=../images/xor.png></td></tr>
+</table></p>
+
+<h2>Behavior</h2>
+
+<p>The XOR, XNOR, Even Parity, and Odd Parity gates each compute
+the respective function of the inputs, and emit the result on the
+output.
+The two-input truth table for the gates is the following.
+<center><table>
+<tr><th><var>x</var></th><th><var>y</var></th><th>XOR</th>
+	<th>XNOR</th><th>Odd</th><th>Even</th></tr>
+<tr><td align=center>0</td><td align=center>0</td>
+  <td align=center>0</td><td align=center>1</td>
+  <td align=center>0</td><td align=center>1</td></tr>
+<tr><td align=center>0</td><td align=center>1</td>
+  <td align=center>1</td><td align=center>0</td>
+  <td align=center>1</td><td align=center>0</td></tr>
+<tr><td align=center>1</td><td align=center>0</td>
+  <td align=center>1</td><td align=center>0</td>
+  <td align=center>1</td><td align=center>0</td></tr>
+<tr><td align=center>1</td><td align=center>1</td>
+  <td align=center>0</td><td align=center>1</td>
+  <td align=center>0</td><td align=center>1</td></tr>
+</table></center>
+As you can see, the Odd Parity gate and the XOR gate behave identically
+with two inputs; similarly, the even parity gate and the XNOR gate
+behave identically.
+But if there are more than two specified inputs, the XOR gate will emit
+1 only when there is exactly one 1 input, whereas the Odd Parity gate
+will emit 1 if there are an odd number of 1 inputs.
+The XNOR gate will emit 1 only when there is <em>not</em> exactly one 1
+input, while the Even Parity gate will emit 1 if there are an even
+number of 1 inputs.</p>
+
+<p>Any inputs that are unspecified (i.e., floating) are ignored. If all
+inputs are floating, then the output is floating, too. If any of the
+inputs are the error value (e.g., if conflicting values are coming into
+the same wire), then the output will be the error value, too.</p>
+
+<p>The multi-bit versions of each gate will perform its one-bit
+transformation bitwise on its inputs.</p>
+
+<p><strong>Note:</strong> Many authorities contend that the shaped XOR
+gate's behavior should correspond to the odd parity gate, but there is
+not agreement on this point.  Logisim's behavior for XOR gates is based
+on the IEEE 91 standard. It is also consistent with the intuitive
+meaning underlying the term <em>exclusive or</em>: A waiter asking
+whether you want a side dish of mashed potatoes, carrots, peas, or cole
+slaw will only accept one choice, not three, whatever some authorities
+may tell you. (I must admit, though, that I have not subjected this
+statement to a rigorous test.)</p>
+
+<h2>Pins</h2>
+
+<dl>
+
+<dt>West edge (inputs, bit width according to Bit Width attribute)
+<dd>The inputs into the component. There will be as many of these as
+specified in the Number of Inputs attribute.</p>
+
+<p>Note that if you are using shaped gates, the west side of XOR and
+XNOR gates will be curved. Nonetheless, the input pins are in a line.
+Logisim will draw short stubs illustrating this; and if you overshoot a
+stub, it will silently assume that you did not mean to overshoot it. In
+"printer view", these stubs will not be drawn unless they are connected
+to wires.</p>
+
+<dt>East edge (output, bit width according to Bit Width attribute)
+<dd>The gate's output, whose value is computed based on the current
+inputs as described above.
+
+</dl>
+
+<h2>Attributes</h2>
+
+<dl>
+
+<dt>Facing
+<dd>The direction of the component (its output relative to its inputs).
+
+<dt>Bit Width
+<dd>The bit width of the component's inputs and outputs.
+
+<dt>Gate Size
+<dd>Determines whether to draw a wider or narrower version of the
+component. This does not affect the number of inputs, which is specified
+by the Number of Inputs attribute; however, if the number of inputs exceeds 3 (for a
+narrow component) or 5 (for a wide component), then the gate will
+be drawn with "wings" to be able to accommodate the number of inputs
+requested.
+
+<dt>Number of Inputs
+<dd>Determines how many pins to have for the component on its west
+side.
+
+</dl>
+
+<h2>Poke Tool Behavior</h2>
+
+<p>None.</p>
+
+<h2>Text Tool Behavior</h2>
+
+<p>None.</p>
+
+<p><a href=../index.html>Back to <em>Library Reference</em></a></p>
+
+</body>
+</html>

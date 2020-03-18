@@ -1,0 +1,85 @@
+<html>
+<head>
+    <title>JAR Libraries</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>JAR Libraries</h1>
+
+<h2>Using JAR libraries</h2>
+
+<p>Logisim has two types of circuit components: those that
+are designed as Logisim circuits, and those that are
+written in Java. Logisim circuits are easier to design, but
+they cannot support sophisticated user interaction, and they
+are relatively inefficient.</p>
+
+<p>Logisim contains a fairly thorough collection of built-in
+libraries of Java components, but it can also load additional
+libraries written by third parties. Once you have downloaded
+a library, you can import it into your project by right-clicking
+the project in the explorer pane (the top line) and choosing
+Load JAR Library....</p>
+
+<p>Then, Logisim will prompt you to select the JAR file. If the
+JAR file doesn't contain information about it, Logisim will then
+may prompt you to type the class name, which should be provided
+by the third party. (Developers can avoid this second prompt by including
+a <q>manifest</q> file in the JAR with a Library-Class attribute
+specifying the main class name.)
+After this, the library's components will
+be available.</p>
+
+<h2>Creating JAR libraries</h2>
+
+<p>The remainder of this section is dedicated to a series of
+thoroughly commented examples illustrating how to develop Logisim
+libraries yourself. You should only attempt this if you're
+an experienced Java programmer. You will find the documentation
+beyond these examples fairly meager.</p>
+
+<p>You can download a JAR file that allows these examples to be
+imported into Logisim via the Logisim Web site's Links section.
+That JAR file also contains the source code
+contained in these examples; this source code is in the public
+domain. (In contrast, the source code to Logisim is released
+under the GNU Public License.)</p>
+
+<dl>
+
+<dt><a href=byteincr.html>Byte Incrementer</a>
+<dd>Illustrates the essential components of any component type
+using a simple example of a component that inputs one 8-bit value
+and emits that value plus one.</p>
+
+<dt><a href=library.html>Library Class</a>
+<dd>Illustrates how to define a library. This is the entry point
+for any JAR file - the class whose name the user enters when
+loading the JAR library.</p>
+
+<dt><a href=genincr.html>General Incrementer</a>
+<dd>Illustrates how to make components customizable through
+the usage of attributes, by generalizing the byte incrementer
+to work with any bit width for the input and output.</p>
+
+<dt><a href=basiccounter.html>Basic Counter</a>
+<dd>Illustrates how to make a component that has internal state,
+in particular an 8-bit counter that remembers a current value and
+increments each time its clock input encounters a rising edge.</p>
+
+<dt><a href=counter.html>Counter</a>
+<dd>Demonstrates a complete, fairly sophisticated component with
+which the user can interact. It implements a counter (where the
+number of bits remembered is customizable) where the user can
+edit the current value by clicking on it with the Poke Tool and
+typing a value.</p>
+
+<dt><a href=guide.html>Guidelines</a>
+<dd>General information for those developing third-party libraries.</p>
+
+</dl>
+
+<p><strong>Next:</strong> <a href=byteincr.html>Byte Incrementer</a>.</p>
+
+</body>
+</html>

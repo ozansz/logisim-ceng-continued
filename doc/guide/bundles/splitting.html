@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title>Splitters</title>
+</head>
+<body bgcolor=FFFFFF>
+
+<h1>Splitters</h1>
+
+<p>When you work with multi-bit values, you will often want to route
+different bits in different directions.
+The Base library's splitter tool (<img width=16 height=16
+src=../../icons/splitter.gif> allows you to accomplish this.</p>
+
+<p>For example, suppose we want to build a circuit taking an eight-bit
+input and outputting the AND of its two nibbles (the upper four bits and
+the lower four bits). We will have an eight-bit value coming from the
+input pin, and we want to split that into two four-bit values. In the
+below circuit, we have used a splitter to accomplish this.
+<center><img width=345 height=398 src=splitter-circ.png></center>
+In this example, the splitter happens to actually split an
+incoming value into multiple outgoing values. But splitters can
+also combine multiple values into a single value. In fact,
+they are non-directional: They can send values one way at one time
+and another way later, and they can even do both at the same
+time, as in the below example where two values are fed rightward
+and the middle value feeds leftward.
+<center><img width=345 height=291 src=splitter-2way.png></center></p>
+
+<p>The key to understanding splitters is their attributes.
+In the following, the term <em>split end</em> refers to one of
+the multiple wires on one side, while the term <em>combined
+end</em> refers to the single wire on the other side.
+<ul>
+
+<li> The <strong>Facing</strong> attribute tells where the split ends
+should be relative to the combined end. This cannot be changed
+once a splitter is dropped into the circuit.</p>
+
+<li> The <strong>Fan Out</strong> attribute specifies how many
+split ends there are. This also cannot be changed once a splitter is
+dropped into the circuit.</p>
+
+<li> The <strong>Bit Width</strong> attribute specifies the bit width of
+the combined end.</p>
+
+<li> The <strong>Bit <var>x</var></strong> attribute says which split
+end corresponds to bit <em>x</em> of the combined end. If multiple
+bits correspond to the same split end, then their relative ordering
+will be the same as in the combined end. Logisim splitters cannot
+have a bit from the combined end correspond to multiple split ends.</p>
+
+</ul>
+Note that any change to the Fan Out or Bit Width
+attributes will reset all Bit <var>x</var> attributes so that
+they will distribute the bits of the combined value as evenly
+as possible among the split ends.</p>
+
+<p><strong>Next:</strong> <a href=colors.html>Wire colors</a>.</p>
+
+</body>
+</html>
