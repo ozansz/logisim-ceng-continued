@@ -141,7 +141,7 @@ public class Grader {
         project.repaintCanvas();
     }
 
-    public boolean checkOutputs(char[] values) {
+    public boolean checkOutputs(char[] values, char[] inp_values) {
         for (int i = 0; i < values.length; i++) {
             if (values[i] == 'X')
                 continue;
@@ -152,7 +152,15 @@ public class Grader {
                 sendingValue = getClockValue((Clock)outputPins[i]);
             
             if (sendingValue != values[i]) {
-                System.out.printf("!!!INDEX: %d, expecting: %c, got: %c\n", i, values[i], sendingValue);
+                System.out.printf("\n[!!] TEST RUN FAIL\n");
+                System.out.printf("    for input : %s,\n", new String(inp_values));
+                System.out.printf("    got output: %s\n", new String(values));
+
+                for (int j = 0; j < i + 16; j++)
+                    System.out.printf(" ");
+
+                System.out.println("^ erroneous output pin");
+
                 return false;
             }
         }
@@ -285,14 +293,16 @@ public class Grader {
                 else if (s.type == State.TYPE.TRUTH_TABLE) {
                     if (curPhase == 0) {
                         setInputs(s.inputs);
-                        System.out.println(new String(s.inputs));
+                        System.out.printf("[+] Testing inputs: %s\n", new String(s.inputs));
                         curPhase = 1;
                         return;
                     } else {
-                        if (!checkOutputs(s.outputs)) {
+                        if (!checkOutputs(s.outputs, s.inputs)) {
                             runFailed = true;
                             curState = r.states.size();
-                            System.out.printf("!!TEST RUN FAIL: inputs: %s, outputs: %s\n", s.inputs, s.outputs);
+                            //System.out.printf("\n[!!] TEST RUN FAIL\n");
+                            //System.out.printf("    for inputs: %s,\n", new String(s.inputs));
+                            //System.out.printf("    got outputs: %s.\n", new String(s.outputs));
                         }
                         else {
                             curState++;
@@ -301,7 +311,7 @@ public class Grader {
                     }
                 }
                 else if (s.type == State.TYPE.CONDITION) {
-                    if (!checkOutputs(s.outputs)) {
+                    if (!checkOutputs(s.outputs, s.inputs)) {
                         curState++;
                         curPhase = 0;
                     }
