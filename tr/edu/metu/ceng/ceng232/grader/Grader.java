@@ -154,7 +154,18 @@ public class Grader {
             if (sendingValue != values[i]) {
                 System.out.printf("\n[!!] TEST RUN ERROR\n");
                 System.out.printf("    for input : %s,\n", new String(inp_values));
-                System.out.printf("    got output: %s\n", new String(values));
+                System.out.printf("    expected  : %s\n", new String(values));
+                System.out.printf("    got this  : ");
+
+                for (int j = 0; j < i; j++)
+                    System.out.printf("_");
+
+                System.out.printf("%c", sendingValue);
+
+                for (int j = 0; j < values.length - i - 1; j++)
+                    System.out.printf("_");
+
+                System.out.printf("\n");
 
                 for (int j = 0; j < i + 16; j++)
                     System.out.printf(" ");
